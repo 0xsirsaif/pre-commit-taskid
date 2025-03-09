@@ -1,0 +1,6 @@
+- id: taskid-prepender
+  name: Task ID Prepender
+  description: Automatically appends task IDs from branch names to commit messages
+  entry: pre-commit-taskid
+  language: python
+  stages: [prepare-commit-msg]
