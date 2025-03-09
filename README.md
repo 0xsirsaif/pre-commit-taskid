@@ -9,6 +9,8 @@ This pre-commit hook extracts task IDs from your branch names and automatically 
 - `feature-1234`
 - `bugfix-5678`
 - `hotfix-9012`
+- `user/feature-3456`
+- `release/v1.0-7890`
 
 When you make a commit, the hook will extract the numeric ID (e.g., `1234`) from your branch name and append it to your commit message in the format `#1234`.
 
@@ -28,69 +30,160 @@ pip install pre-commit-taskid
 ### From Source
 
 ```bash
-git clone https://github.com/yourusername/pre-commit-taskid.git
+git clone https://github.com/0xsirsaif/pre-commit-taskid.git
 cd pre-commit-taskid
 pip install -e .
 ```
 
 ## Usage
 
-1. Add the hook to your `.pre-commit-config.yaml` file:
+### 1. Add to your pre-commit config
+
+Add the hook to your `.pre-commit-config.yaml` file:
 
 ```yaml
 repos:
-  - repo: https://github.com/yourusername/pre-commit-taskid
+  - repo: https://github.com/0xsirsaif/pre-commit-taskid
     rev: v0.1.0 # Use the specific version tag
     hooks:
       - id: taskid-prepender
+        stages: [prepare-commit-msg] # CRITICAL: This line is required!
 ```
 
-2. Install the pre-commit hooks:
+### 2. Install the hook
 
 ```bash
+# IMPORTANT: Must specify the prepare-commit-msg hook type
 pre-commit install --hook-type prepare-commit-msg
 ```
 
-3. Make commits as usual. The hook will automatically append the task ID to your commit messages.
+### 3. Make commits as usual
+
+The hook will automatically append the task ID to your commit messages.
 
 ## Examples
 
-### Branch Name: `feature-1234`
+### Example 1: Feature Branch
 
-Original commit message:
+```bash
+# Create a feature branch
+git checkout -b feature-1234
 
-```
-Add new login functionality
-```
+# Make changes and commit
+git add .
+git commit -m "Add login functionality"
 
-Modified commit message:
-
-```
-Add new login functionality (#1234)
-```
-
-### Branch Name: `bugfix-5678`
-
-Original commit message:
-
-```
-Fix null pointer exception in user service
+# Resulting commit message:
+# "Add login functionality (#1234)"
 ```
 
-Modified commit message:
+### Example 2: Bugfix Branch
 
+```bash
+# Create a bugfix branch
+git checkout -b bugfix-5678
+
+# Make changes and commit
+git add .
+git commit -m "Fix null pointer exception"
+
+# Resulting commit message:
+# "Fix null pointer exception (#5678)"
 ```
-Fix null pointer exception in user service #5678
+
+### Example 3: Branch with Path
+
+```bash
+# Create a branch with a path
+git checkout -b user/feature-3456
+
+# Make changes and commit
+git add .
+git commit -m "Add user profile"
+
+# Resulting commit message:
+# "Add user profile (#3456)"
 ```
 
-## Error Handling
+## Troubleshooting
 
-- If no task ID is found in the branch name, the hook will log a warning but allow the commit to proceed without modification.
-- If there are any errors during execution, the hook will log the error and exit with a non-zero status code.
+### Hook Not Running
 
-## Configuration
+If the hook isn't running:
 
-No additional configuration is required. The hook will work out of the box with branch names that follow the format `branchName-{taskID}`.
+1. Ensure you've installed it with the correct hook type:
+
+   ```bash
+   pre-commit install --hook-type prepare-commit-msg
+   ```
+
+2. Verify the hook is installed:
+
+   ```bash
+   ls -la .git/hooks/prepare-commit-msg
+   ```
+
+3. Check your `.pre-commit-config.yaml` includes `stages: [prepare-commit-msg]`
+
+### Task ID Not Extracted
+
+If the task ID isn't being extracted:
+
+1. Ensure your branch name follows the pattern with a hyphen followed by numbers at the end:
+
+   - ✅ `feature-1234`
+   - ✅ `user/feature-1234`
+   - ❌ `feature_1234`
+   - ❌ `feature1234`
+
+2. Check the branch name:
+
+   ```bash
+   git branch --show-current
+   ```
+
+### Parentheses Around Task ID
+
+If you don't see parentheses around the task ID (e.g., `#(1234)` instead of `#1234`):
+
+1. Update to the latest version of the package
+2. Clean the pre-commit cache:
+   ```bash
+   pre-commit clean
+   ```
+
+## Advanced Configuration
+
+### Using with Local Hooks
+
+You can also use the hook locally without specifying a repository:
+
+```yaml
+repos:
+  - repo: local
+    hooks:
+      - id: taskid-prepender
+        name: Task ID Prepender
+        entry: pre-commit-taskid
+        language: python
+        stages: [prepare-commit-msg]
+        additional_dependencies: ["pre-commit-taskid==0.1.0"]
+```
+
+### Manual Testing
+
+To test the hook manually:
+
+```bash
+# Create a test commit message
+echo "Test commit" > .git/COMMIT_EDITMSG
+
+# Run the hook manually
+pre-commit-taskid .git/COMMIT_EDITMSG
+
+# Check the result
+cat .git/COMMIT_EDITMSG
+```
 
 ## Development
 
@@ -130,7 +223,7 @@ To set up the development environment:
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/pre-commit-taskid.git
+git clone https://github.com/0xsirsaif/pre-commit-taskid.git
 cd pre-commit-taskid
 
 # Install the package in development mode with dev dependencies
