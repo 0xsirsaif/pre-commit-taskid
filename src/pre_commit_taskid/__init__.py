@@ -96,7 +96,7 @@ def append_task_id_to_commit_msg(commit_msg: str, task_id: str) -> str:
     if not lines:
         return f"#{task_id}"
 
-    lines[0] = f"{lines[0]} #{task_id}"
+    lines[0] = f"{lines[0]} (#{task_id})"
     return "\n".join(lines)
 
 

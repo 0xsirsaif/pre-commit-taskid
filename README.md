@@ -66,7 +66,7 @@ Add new login functionality
 Modified commit message:
 
 ```
-Add new login functionality #1234
+Add new login functionality (#1234)
 ```
 
 ### Branch Name: `bugfix-5678`

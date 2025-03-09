@@ -38,7 +38,7 @@ def test_manual_hook_execution(feature_branch_with_task_id):
         updated_msg = f.read()
     
     # Assert that the task ID was appended
-    assert updated_msg == f"Update sample file #{task_id}"
+    assert updated_msg == f"Update sample file (#{task_id})"
 
 
 # This test is commented out because it requires the pre-commit-taskid package to be installed

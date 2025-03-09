@@ -51,21 +51,21 @@ class TestAppendTaskIdToCommitMsg:
     def test_append_task_id_single_line(self):
         """Test appending task ID to a single-line commit message."""
         commit_msg = "Add new feature"
-        expected = "Add new feature #1234"
+        expected = "Add new feature (#1234)"
         assert append_task_id_to_commit_msg(commit_msg, "1234") == expected
     
     def test_append_task_id_multi_line(self):
         """Test appending task ID to a multi-line commit message."""
         commit_msg = "Add new feature\n\nThis is a detailed description."
-        expected = "Add new feature #1234\n\nThis is a detailed description."
+        expected = "Add new feature (#1234)\n\nThis is a detailed description."
         assert append_task_id_to_commit_msg(commit_msg, "1234") == expected
     
     def test_append_task_id_already_present(self):
         """Test appending task ID when it's already present in the commit message."""
-        commit_msg = "Add new feature #1234"
+        commit_msg = "Add new feature (#1234)"
         assert append_task_id_to_commit_msg(commit_msg, "1234") == commit_msg
         
-        commit_msg = "Add new feature #1234\n\nThis is a detailed description."
+        commit_msg = "Add new feature (#1234)\n\nThis is a detailed description."
         assert append_task_id_to_commit_msg(commit_msg, "1234") == commit_msg
 
 
@@ -92,7 +92,7 @@ class TestProcessCommitMsg:
             assert result == 0
             mock_get_branch.assert_called_once()
             mock_read.assert_called_once_with(temp_file_path)
-            mock_write.assert_called_once_with(temp_file_path, "Add new feature #1234")
+            mock_write.assert_called_once_with(temp_file_path, "Add new feature (#1234)")
         finally:
             # Clean up
             os.unlink(temp_file_path)
