@@ -1,0 +1,1 @@
+"""Scripts for the pre-commit-taskid package.""" 
