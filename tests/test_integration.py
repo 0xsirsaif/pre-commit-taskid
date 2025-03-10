@@ -41,6 +41,40 @@ def test_manual_hook_execution(feature_branch_with_task_id):
     assert updated_msg == f"Update sample file (#{task_id})"
 
 
+@pytest.mark.integration
+def test_manual_hook_execution_with_existing_taskid(feature_branch_with_task_id):
+    """Test manual execution of the pre-commit hook when commit message already has a taskid."""
+    temp_dir, _, task_id = feature_branch_with_task_id
+    different_task_id = "5678"
+    
+    # Create a commit message file with an existing taskid
+    commit_msg_file = os.path.join(temp_dir, ".git", "COMMIT_EDITMSG")
+    with open(commit_msg_file, "w") as f:
+        f.write(f"Update sample file (#{different_task_id})")
+    
+    # Get the project root directory
+    project_root = Path(__file__).parent.parent
+    
+    # Run the pre-commit hook manually using the current Python interpreter
+    result = subprocess.run(
+        [sys.executable, "-c", 
+         f"import sys; sys.path.insert(0, '{project_root}'); "
+         f"from src.pre_commit_taskid import main; "
+         f"sys.argv = ['pre-commit-taskid', '{commit_msg_file}']; "
+         f"sys.exit(main())"],
+        check=True,
+        capture_output=True,
+    )
+    
+    # Read the updated commit message
+    with open(commit_msg_file, "r") as f:
+        updated_msg = f.read()
+    
+    # Assert that the original taskid was preserved and not replaced with the branch taskid
+    assert updated_msg == f"Update sample file (#{different_task_id})"
+    assert task_id not in updated_msg
+
+
 # This test is commented out because it requires the pre-commit-taskid package to be installed
 # and configured in the test environment. It's provided as an example of how to test the hook
 # in a real Git repository with pre-commit installed.

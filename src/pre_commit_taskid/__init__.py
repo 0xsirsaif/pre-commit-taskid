@@ -91,6 +91,10 @@ def append_task_id_to_commit_msg(commit_msg: str, task_id: str) -> str:
     if f"#{task_id}" in commit_msg:
         return commit_msg
 
+    # Check if the commit message already contains a taskid in the format "(#id)"
+    if re.search(r'\(#\d+\)', commit_msg):
+        return commit_msg
+
     # Append the task ID to the first line of the commit message
     lines = commit_msg.splitlines()
     if not lines:

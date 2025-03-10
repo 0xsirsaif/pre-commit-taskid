@@ -1,6 +1,6 @@
 [project]
 name = "pre-commit-taskid"
-version = "0.1.1"
+version = "0.1.2"
 description = "A pre-commit hook that automatically appends task IDs from branch names to commit messages"
 readme = "README.md"
 authors = [
