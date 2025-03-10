@@ -67,6 +67,14 @@ class TestAppendTaskIdToCommitMsg:
         
         commit_msg = "Add new feature (#1234)\n\nThis is a detailed description."
         assert append_task_id_to_commit_msg(commit_msg, "1234") == commit_msg
+    
+    def test_skip_when_different_taskid_present(self):
+        """Test that function skips adding taskid when commit message already has a different taskid in (#id) format."""
+        commit_msg = "Add new feature (#5678)"
+        assert append_task_id_to_commit_msg(commit_msg, "1234") == commit_msg
+        
+        commit_msg = "Add new feature (#5678)\n\nThis is a detailed description."
+        assert append_task_id_to_commit_msg(commit_msg, "1234") == commit_msg
 
 
 @pytest.mark.unit
@@ -135,6 +143,33 @@ class TestProcessCommitMsg:
             # Assertions
             assert result == 1  # Should return 1 on exception
             mock_get_branch.assert_called_once()
+        finally:
+            # Clean up
+            os.unlink(temp_file_path)
+    
+    @patch('pre_commit_taskid.get_current_branch')
+    @patch('pre_commit_taskid.read_commit_msg_file')
+    @patch('pre_commit_taskid.write_commit_msg_file')
+    def test_process_commit_msg_with_existing_taskid(self, mock_write, mock_read, mock_get_branch):
+        """Test processing commit message when it already contains a taskid."""
+        # Setup mocks
+        mock_get_branch.return_value = "feature-1234"
+        mock_read.return_value = "Add new feature (#5678)"
+        
+        # Create a temporary file
+        with tempfile.NamedTemporaryFile(delete=False) as temp_file:
+            temp_file_path = temp_file.name
+        
+        try:
+            # Call the function
+            result = process_commit_msg(temp_file_path)
+            
+            # Assertions
+            assert result == 0
+            mock_get_branch.assert_called_once()
+            mock_read.assert_called_once_with(temp_file_path)
+            # Verify that write_commit_msg_file is called with the original message
+            mock_write.assert_called_once_with(temp_file_path, "Add new feature (#5678)")
         finally:
             # Clean up
             os.unlink(temp_file_path)
