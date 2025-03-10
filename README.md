@@ -18,7 +18,7 @@ When you make a commit, the hook will extract the numeric ID (e.g., `1234`) from
 
 ### Prerequisites
 
-- Python 3.8 or higher
+- Python 3.9 or higher
 - [pre-commit](https://pre-commit.com/) package installed
 
 ### Using pip
@@ -37,6 +37,12 @@ pip install -e .
 
 ## Usage
 
+### 0. CLI - Not so useful
+
+```bash
+pre-commit-taskid <commit-msg-file>
+```
+
 ### 1. Add to your pre-commit config
 
 Add the hook to your `.pre-commit-config.yaml` file:
@@ -44,7 +50,7 @@ Add the hook to your `.pre-commit-config.yaml` file:
 ```yaml
 repos:
   - repo: https://github.com/0xsirsaif/pre-commit-taskid
-    rev: v0.1.0 # Use the specific version tag
+    rev: v0.1.2 # Use the specific version tag
     hooks:
       - id: taskid-prepender
         stages: [prepare-commit-msg] # CRITICAL: This line is required!
@@ -144,10 +150,11 @@ If the task ID isn't being extracted:
 
 ### Parentheses Around Task ID
 
-If you don't see parentheses around the task ID (e.g., `#(1234)` instead of `#1234`):
+If you don't see parentheses around the task ID (e.g., `#1234` instead of `#(1234)`):
 
 1. Update to the latest version of the package
 2. Clean the pre-commit cache:
+
    ```bash
    pre-commit clean
    ```
