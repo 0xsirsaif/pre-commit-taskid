@@ -1,14 +1,15 @@
 repos:
-  - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.4.0
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.8.0
     hooks:
-      - id: trailing-whitespace
-      - id: end-of-file-fixer
-      - id: check-yaml
-      - id: check-added-large-files
-
-  # Add the taskid-prepender hook
+      - id: mypy
+        # Enable verbose output for the 'mypy' hook.
+        verbose: true
+        # Ignore the exit code of mypy to pass the commit, but still show the output
+        entry: bash -c 'mypy "$@" || true' --
+  
   - repo: https://github.com/0xsirsaif/pre-commit-taskid
-    rev: v0.1.0  # Use the specific version tag
+    rev: 0.1.2
     hooks:
       - id: taskid-prepender
+        stages: [prepare-commit-msg]

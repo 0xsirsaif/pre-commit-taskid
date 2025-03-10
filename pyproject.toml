@@ -11,6 +11,7 @@ dependencies = [
     "pre-commit>=4.0.0",
     "pytest-cov>=6.0.0",
     "pytest>=8.3.5",
+    "ruff>=0.9.10",
 ]
 
 [project.scripts]
@@ -33,7 +34,4 @@ addopts = "--verbose --cov=pre_commit_taskid --cov-report=term-missing"
 dev = [
     "pytest>=7.0.0",
     "pytest-cov>=4.0.0",
-    "black>=23.0.0",
-    "isort>=5.0.0",
-    "flake8>=6.0.0",
 ]

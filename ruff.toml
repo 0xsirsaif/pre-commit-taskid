@@ -1,0 +1,48 @@
+line-length = 120
+show-fixes = true
+
+[lint]
+extend-select = [
+    "F", # pyflakes
+    "E", "W", # pycodestyle (PEP 8) E for error, W for warning
+    "I", # flake8-isort
+    "B", # flake8-bugbear https://github.com/PyCQA/flake8-bugbear#list-of-warnings
+    "N", # PEP8 Naming Conventions, fixable
+    "S", # flake8-bandit for Security checks, fixable
+    "T20", # flake8-print for checking for print statements, fixable
+    "PT", # flake8-pytest-style for checking for pytest best practices, fixable
+    "Q", # flake8-quotes for checking for consistent quotes, fixable
+    "TID", # flake8-tidy-imports: Checks for banned imports, fixable*
+    "SIM", # flake8-simplify: Checks for simplified code, fixable*,
+    "DTZ", # flake8-datetimez for checking for timezone issues, not fixable
+    "C90", # flake8-complexity: The McCabe complexity of a block of code is too high
+]
+extend-ignore = [
+    "B012", # bugbear: jump-statements in finally block
+    "N818", # PEP8 Naming Conventions: Exception name should be named with 'Error' suffix
+    "N999", # PEP8 Naming Conventions: Invalid module name
+    "TID252", # flake8-tidy-imports: Prefer absolute imports over relative imports from parent modules
+    "W191",
+    "E111",
+    "E114",
+    "E117",
+    "Q000",
+    "Q001",
+    "Q002",
+    "Q003",
+]
+
+# Overtime we should reduce this number.
+mccabe.max-complexity = 15
+
+[format]
+quote-style = "double"
+docstring-code-format = true
+indent-style = "tab"
+
+[lint.isort]
+combine-as-imports = true
+
+[lint.extend-per-file-ignores]
+"*/tests/*" = ["S101"] # flake8-bandit: Use of assert detected
+"*/test_*" = ["S101"] # flake8-bandit: Use of assert detected
